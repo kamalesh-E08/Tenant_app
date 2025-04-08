@@ -134,37 +134,37 @@ const sendRoomAssignmentEmail = (adminEmail, tenantEmail, roomName, memberName, 
 
 app.post("/rooms/:id/members", authenticateJWT, async (req, res) => {
     const { id } = req.params;
-    // const{email} = req.body;
-    const { member, rentAmount } = req.body;
-    // const adminEmail = req.user.email;
-
-    const room = await Room.findById(req.params.roomId);
-    const duplicateMember = room.members.find(
-    (member) => member.email.toLowerCase() === req.body.email.toLowerCase()
-    );
-    if (duplicateMember) {
-        return res.status(400).json({ 
-            message: "Email already exists in this room." 
-        });
-    }
-
-
+    const { email, name, rentAmount } = req.body;
+    const adminEmail = req.user.email;
+  
     try {
-        const room = await Room.findById(id);
-        if (!room) {
-            return res.status(404).json({ message: "Room not found" });
-        }
-
-        room.members.push({ name: member, rentDue: true, rentAmount });
-        await room.save();
-
-        // sendRoomAssignmentEmail(adminEmail, email, room.name, member, rentAmount);
-
-        res.status(200).json(room);
+      const room = await Room.findById(id);
+      if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+      }
+  
+      const duplicateMember = room.members.find(
+        (member) => member.email.toLowerCase() === email.toLowerCase()
+      );
+  
+      if (duplicateMember) {
+        return res.status(400).json({
+          message: "Email already exists in this room.",
+        });
+      }
+  
+      room.members.push({ name, email, rentAmount, rentDue: true });
+      await room.save();
+  
+      // sendRoomAssignmentEmail(adminEmail, email, room.name, name, rentAmount);
+  
+      res.status(200).json(room);
     } catch (err) {
-        res.status(500).json({ message: "Error adding member", error: err });
+      console.error("Add Member Error:", err);
+      res.status(500).json({ message: "Error adding member", error: err });
     }
-});
+  });
+  
 
 
 app.delete("/rooms/:id", authenticateJWT, async (req, res) => {
@@ -268,9 +268,9 @@ app.put("/rooms/:roomId/faults/:faultIndex", authenticateJWT, async (req, res) =
     } catch (err) {
       res.status(500).json({ message: "Error updating fault", error: err });
     }
-  });
+});
 
-  app.get("/rooms/:id/faults", authenticateJWT, async (req, res) => {
+app.get("/rooms/:id/faults", authenticateJWT, async (req, res) => {
     const { id } = req.params;
     try {
         const room = await Room.findById(id);
@@ -281,7 +281,6 @@ app.put("/rooms/:roomId/faults/:faultIndex", authenticateJWT, async (req, res) =
     }
 });
   
-
 app.listen(8000, () => {
     console.log("Server running on http://localhost:8000");
 });
