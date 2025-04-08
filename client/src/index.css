@@ -1,0 +1,252 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Body Styling */
+body {
+  background-color: #0b0c10;
+  color: #f1f1f1;
+}
+
+/* Button */
+button {
+  cursor: pointer;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: 0.3s ease-in-out;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Auth Form */
+.auth-container {
+  width: 350px;
+  margin: 60px auto;
+  padding: 20px;
+  background: #1f1f2e;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.auth-container h2 {
+  color: #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-container input {
+  padding: 10px;
+  margin: 8px 0;
+  background: #0f1117;
+  border: 2px solid #3c3f52;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.auth-container button {
+  background: #2980b9;
+  color: #fff;
+}
+
+.auth-container a {
+  text-decoration: none;
+  color: #3498db;
+  font-weight: bold;
+  margin-top: 10px;
+  display: inline-block;
+}
+
+/* Admin Dashboard */
+.admin-dashboard {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #1f1f2e;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.admin-dashboard h1 {
+  text-align: center;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* Add Room */
+.add-room {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  justify-content: center;
+}
+
+.add-room input {
+  padding: 10px;
+  background-color: #0f1117;
+  border: 2px solid #3c3f52;
+  border-radius: 6px;
+  color: #fff;
+  width: 250px;
+  font-size: 14px;
+}
+
+.add-room button {
+  background-color: #2980b9;
+  color: #fff;
+}
+
+.room-card {
+  background: #1e1f2b;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.room-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.4);
+}
+
+.room-card h2 {
+  font-size: 20px;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.room-card .member-list {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.room-card .member-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #2c2d3f; /* dark card background */
+  color: #dcdde1; /* light text */
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.room-card .member-list li:hover {
+  background: #3b3c50;
+}
+
+.room-card .member-list li span {
+  flex: 1;
+}
+
+.room-card .member-list li .rent-status {
+  font-weight: bold;
+  color: #f1c40f;
+}
+
+.room-card .member-list li .rent-status.paid {
+  color: #2ecc71;
+}
+
+.room-card .member-list li .rent-status.due {
+  color: #e74c3c;
+}
+
+.room-card .member-list li button {
+  background: #e74c3c;
+  border: none;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.room-card .member-list li button:hover {
+  background: #c0392b;
+}
+
+
+/* Tenant Dashboard */
+.tenant-dashboard {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #1f1f2e;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tenant-info {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.tenant-info h2 {
+  color: #f1f1f1;
+}
+
+.roommate-details {
+  padding: 15px;
+  background: #2c2e3f;
+  border-radius: 8px;
+  margin-top: 10px;
+  color: #ddd;
+}
+
+/* Fault Management */
+.room-faults {
+  margin-top: 20px;
+}
+
+.room-faults h3 {
+  color: #ff6b6b;
+}
+
+.room-faults ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.room-faults li {
+  background: #2e2f3f;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 5px;
+}
+
+.room-faults button {
+  background: #e74c3c;
+  color: #fff;
+}
+
