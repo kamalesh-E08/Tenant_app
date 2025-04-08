@@ -32,8 +32,6 @@ const RoomFaultReporter = ({ roomId, token }) => {
       })
       .catch((err) => console.error('Error reporting fault:', err));
   };
-
-  // Save edited fault
   const saveEdit = (index) => {
     const fault = faults[index];
     const updatedFault = { ...fault, description: editDescription, status: editStatus };
