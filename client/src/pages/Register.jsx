@@ -11,12 +11,32 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!name.trim() || name.length < 2) {
+      return alert("Name must be at least 2 characters.");
+    }
+
+    if (!emailRegex.test(email)) {
+      return alert("Invalid email format.");
+    }
+
+    if (password.length < 6) {
+      return alert("Password must be at least 6 characters.");
+    }
+
+    if (!["tenant", "admin"].includes(role)) {
+      return alert("Invalid role selected.");
+    }
+    
     axios.post('http://localhost:8000/register',{name, email, password, role})
     .then(res =>{
       navigate('/login');
       console.log(res)
     })
-    .catch(err =>console.log(err))
+    .catch(err =>{
+      console.error("Registration error:", err);
+      alert("Registration failed!");
+    })
   };
  
   return (

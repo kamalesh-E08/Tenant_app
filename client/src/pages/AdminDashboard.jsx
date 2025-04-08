@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import RoomFaultReporter from "./RoomFault";
 
 const AdminDashboard = () => {
   const [rooms, setRooms] = useState([]);
@@ -23,11 +24,15 @@ const AdminDashboard = () => {
   }, [token]);
 
   const addRoom = () => {
-    if (!newRoomName.trim()) {
-      alert("Room name cannot be empty");
-      return;
-    }
-
+    const trimmedRoom = newRoomName.trim().toLowerCase();
+    const isDuplicate = rooms.some(
+      (room) => room.name.trim().toLowerCase() === trimmedRoom
+    );
+  
+    if (!trimmedRoom) {return alert("Room name cannot be empty.");}
+  
+    if (isDuplicate) {return alert("Room with this name already exists.");}
+  
     axios
       .post(
         "http://localhost:8000/rooms",
@@ -40,45 +45,65 @@ const AdminDashboard = () => {
       })
       .catch((err) => console.error(err));
   };
+  
+const addMember = (roomId) => {
+  const roomInput = newMember[roomId];
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const addMember = (roomId) => {
-    const roomInput = newMember[roomId];
-    if (!roomInput?.email || !roomInput?.name || !roomInput.rentAmount) {
-      alert("Please fill in all fields");
-      return;
-    }
+  if (!roomInput?.email || !roomInput?.name || !roomInput?.rentAmount) {
+    return alert("Please fill in all fields.");
+  }
 
-    axios
-      .post(
-        `http://localhost:8000/rooms/${roomId}/members`,
-        {
-          email: roomInput.email,
-          name: roomInput.name,
-          rentAmount: parseFloat(roomInput.rentAmount),
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      .then((res) => {
-        setRooms((prevRooms) =>
-          prevRooms.map((room) => (room._id === roomId ? res.data : room))
-        );
-        setNewMember((prev) => ({
-          ...prev,
-          [roomId]: { email: "", name: "", rentAmount: "" },
-        }));
+  if (!emailRegex.test(roomInput.email)) {
+    return alert("Invalid email format.");
+  }
+
+  const room = rooms.find((r) => r._id === roomId);
+  const duplicateEmail = room?.members?.some(
+    (member) => member.email.toLowerCase() === roomInput.email.toLowerCase()
+  );
+
+  if (duplicateEmail) {
+    return alert("Member with this email already exists in this room.");
+  }
+
+  const rent = parseFloat(roomInput.rentAmount);
+  if (isNaN(rent) || rent <= 0) {
+    return alert("Enter a valid rent amount.");
+  }
+
+  axios
+    .post(
+      `http://localhost:8000/rooms/${roomId}/members`,
+      {
+        email: roomInput.email,
+        name: roomInput.name,
+        rentAmount: rent,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then((res) => {
+      setRooms((prevRooms) =>
+        prevRooms.map((room) => (room._id === roomId ? res.data : room))
+      );
+      setNewMember((prev) => ({
+        ...prev,
+        [roomId]: { email: "", name: "", rentAmount: "" },
+      }));
+    })
+    .catch((err) => console.error(err));
+};
+
+
+const deleteRoom = (roomId) => {
+  axios
+      .delete(`http://localhost:8000/rooms/${roomId}`, {
+          headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => console.error(err));
-  };
-
-  const deleteRoom = (roomId) => {
-    axios
-        .delete(`http://localhost:8000/rooms/${roomId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-        })
-        .then(() => {
-            setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
-        })
-        .catch((err) => console.error("Error deleting room:", err));
+      .then(() => {
+          setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
+      })
+      .catch((err) => console.error("Error deleting room:", err));
 };
 
 
@@ -111,21 +136,6 @@ const AdminDashboard = () => {
             `Message to ${reminder.memberName}: ${reminder.personalizedMessage}`
           );
         });
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const reportFault = (roomId, faultDescription) => {
-    axios
-      .post(
-        "http://localhost:8000/room-faults",
-        { roomId, description: faultDescription },
-        { headers: { Authorization: `Bearer ${token}` } }
-      )
-      .then((res) => {
-        setRooms((prevRooms) =>
-          prevRooms.map((room) => (room._id === roomId ? res.data : room))
-        );
       })
       .catch((err) => console.error(err));
   };
@@ -233,19 +243,7 @@ const AdminDashboard = () => {
           <button onClick={() => deleteRoom(room._id)} style={{ marginTop: "10px", color: "red" }}>
             Delete Room
           </button>
-
-
-            <h3>Report Fault</h3>
-            <input
-              type="text"
-              placeholder="Describe issue"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  reportFault(room._id, e.target.value);
-                  e.target.value = "";
-                }
-              }}
-            />
+          <RoomFaultReporter/>
           </div>
         ))}
       </div>

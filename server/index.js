@@ -86,6 +86,15 @@ const authenticateJWT = (req, res, next) => {
 app.post("/rooms", authenticateJWT, async (req, res) => {
     const { name } = req.body;
     const userId = req.user.userId;
+
+    const existingRoom = await Room.findOne({
+        name: req.body.name,
+        admin: req.user.id,
+        });
+        if (existingRoom) {
+        return res.status(400).json({ message: "Room already exists for this admin." });
+    }
+
     try {
         const newRoom = new Room({ userId, name, members: [], faults: [] });
         await newRoom.save();
@@ -125,9 +134,20 @@ const sendRoomAssignmentEmail = (adminEmail, tenantEmail, roomName, memberName, 
 
 app.post("/rooms/:id/members", authenticateJWT, async (req, res) => {
     const { id } = req.params;
-    const{email} = req.body;
+    // const{email} = req.body;
     const { member, rentAmount } = req.body;
-    const adminEmail = req.user.email;
+    // const adminEmail = req.user.email;
+
+    const room = await Room.findById(req.params.roomId);
+    const duplicateMember = room.members.find(
+    (member) => member.email.toLowerCase() === req.body.email.toLowerCase()
+    );
+    if (duplicateMember) {
+        return res.status(400).json({ 
+            message: "Email already exists in this room." 
+        });
+    }
+
 
     try {
         const room = await Room.findById(id);
@@ -215,15 +235,50 @@ app.get("/tenant-room", authenticateJWT, async (req, res) => {
   });
 
 app.post("/rooms/:id/faults", authenticateJWT, async (req, res) => {
-const { id } = req.params;
-const { description } = req.body;
+    const { id } = req.params;
+    const { description } = req.body;
+    try{
+    const room = await Room.findById(id);
+    if (!room) return res.status(404).json({ message: "Room not found" });
 
-const room = await Room.findById(id);
-if (!room) return res.status(404).json({ message: "Room not found" });
+    room.faults.push({ description, reportedBy: req.user.email });
+    await room.save();
+    res.status(200).json(room);
+    }catch (err) {
+        res.status(500).json({ message: "Error reporting fault", error: err });
+    }
+});
+  
+app.put("/rooms/:roomId/faults/:faultIndex", authenticateJWT, async (req, res) => {
+    const { roomId, faultIndex } = req.params;
+    const { description, status } = req.body;
+  
+    try {
+      const room = await Room.findById(roomId);
+      if (!room || !room.faults[faultIndex]) {
+        return res.status(404).json({ message: "Fault not found" });
+      }
+  
+      if (description !== undefined) room.faults[faultIndex].description = description;
+      if (status !== undefined) room.faults[faultIndex].status = status;
+      room.faults[faultIndex].updatedAt = new Date();
+  
+      await room.save();
+      res.status(200).json(room);
+    } catch (err) {
+      res.status(500).json({ message: "Error updating fault", error: err });
+    }
+  });
 
-room.faults.push({ description, reportedBy: req.user.email });
-await room.save();
-res.status(200).json(room);
+  app.get("/rooms/:id/faults", authenticateJWT, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const room = await Room.findById(id);
+        if (!room) return res.status(404).json({ message: "Room not found" });
+        res.status(200).json(room.faults);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching faults", error: err });
+    }
 });
   
 

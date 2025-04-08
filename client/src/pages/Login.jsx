@@ -9,19 +9,26 @@ const Login = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return alert("Invalid email format.");
+    }
+
+    if (!password) {
+      return alert("Password is required.");
+    }
     axios.post('http://localhost:8000/login', { email, password })
     .then(res => {
-        console.log(res);
-        
-        if (res.data.message === "Login successful!" && res.data.token) {
-            localStorage.setItem("token", res.data.token);
-            localStorage.setItem("role", res.data.role);
-            alert("Login successful!");
-            navigate(res.data.role === "admin" ? '/admin' : '/tenant');
-        } else {
-            alert("Login failed!");
-        }
+      if (res.data.message === "Login successful!" && res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("role", res.data.role);
+        alert("Login successful!");
+        navigate(res.data.role === "admin" ? '/admin' : '/tenant');
+      } else {
+        alert("Login failed!");
+      }
+      console.log(res);
     })
     .catch(err => {
         console.error("Login error:", err.response?.data || err);
@@ -36,12 +43,14 @@ const Login = () => {
           <input 
             type="email"
             placeholder="Email"
-            required onChange={(e) => setEmail(e.target.value)} 
+            required
+            onChange={(e) => setEmail(e.target.value)} 
           />
           <input 
             type="password" 
             placeholder="Password" 
-            required onChange={(e) => setPassword(e.target.value)} 
+            required 
+            onChange={(e) => setPassword(e.target.value)} 
           />
           <button type="submit">Login</button>
         </form>

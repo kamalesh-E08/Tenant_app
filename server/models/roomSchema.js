@@ -12,11 +12,19 @@ const roomSchema = new mongoose.Schema({
     ],
     faults: [
         {
-            description: String,
-            reportedBy: String,
-            status: { type: String, default: "Pending" },
-        },
-    ],
+          description: String,
+          reportedBy: String,
+          status: {
+            type: String,
+            enum: ["Pending", "In Progress", "Resolved"],
+            default: "Pending"
+          },
+          updatedAt: {
+            type: Date,
+            default: Date.now
+          }
+        }
+      ]
 });
 
 module.exports = mongoose.model('Room', roomSchema);
