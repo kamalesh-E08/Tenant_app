@@ -1,4 +1,3 @@
-// routes/roomRoutes.js
 const express = require("express");
 const Room = require("../models/roomSchema");
 const authenticateJWT = require("../middleware/authenticateJWT");

@@ -19,7 +19,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/tenant_management", {
 app.use("/", authRoutes);
 app.use("/rooms", roomRoutes);
 app.use("/rooms", faultRoutes);
-app.use("/faults", faultRoutes);
 app.use("/tenant", tenantRoutes);
 
 app.listen(8000, () => {

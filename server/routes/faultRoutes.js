@@ -16,7 +16,7 @@ router.post("/:roomId/faults", authenticateJWT, async (req, res) => {
         room.faults.push(fault);
         await room.save();
 
-        res.status(201).json({ message: "Fault reported successfully", fault });
+        res.status(201).json({ message: "Fault reported successfully", faults: room.faults });
     } catch (err) {
         res.status(500).json({ message: "Error reporting fault", error: err });
     }
@@ -37,7 +37,7 @@ router.put("/:roomId/faults/:faultId", authenticateJWT, async (req, res) => {
         if (status) fault.status = status;
 
         await room.save();
-        res.status(200).json({ message: "Fault updated successfully", fault });
+        res.status(200).json({ message: "Fault updated successfully", faults: room.faults });
     } catch (err) {
         res.status(500).json({ message: "Error updating fault", error: err });
     }

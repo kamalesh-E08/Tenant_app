@@ -22,6 +22,8 @@ const Login = () => {
     .then(res => {
       if (res.data.message === "Login successful!" && res.data.token) {
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("email", res.data.email);
+        localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.role);
         alert("Login successful!");
         navigate(res.data.role === "admin" ? '/admin' : '/tenant');

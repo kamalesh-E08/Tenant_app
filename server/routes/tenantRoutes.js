@@ -1,31 +1,37 @@
-// routes/tenantRoutes.js
 const express = require("express");
 const Room = require("../models/roomSchema");
 const authenticateJWT = require("../middleware/authenticateJWT");
 
 const router = express.Router();
 
-// Get tenant's assigned room and details
-router.get("/room", authenticateJWT, async (req, res) => {
+router.get("/tenant-info/:email", authenticateJWT, async (req, res) => {
+    let { email } = req.params;
+    email = email.toLowerCase();
     try {
-        const userEmail = req.user.email;
-        const room = await Room.findOne({ "members.email": userEmail });
+        const room = await Room.findOne({ "members.email": email }).populate("userId", "name email");
+        console.log("Room found:", room);
+        if (!room) return res.status(404).json({ message: "Not Found" });
 
-        if (!room) return res.status(404).json({ message: "Room not assigned" });
+        const tenant = room.members.find(member => member.email === email);
 
-        const member = room.members.find((m) => m.email === userEmail);
-        const admin = room.userId;
+        if (!tenant) return res.status(404).json({ message: "Tenant not found in the room members list." });
+       
+        const roommates = room.members.filter(member => member.email !== email);
+        const faults = room.faults;
 
         res.status(200).json({
-            roomName: room.name,
-            yourDetails: member,
-            roommates: room.members.filter((m) => m.email !== userEmail),
-            adminId: admin,
-            faults: room.faults,
+            tenant,
+            roommates,
+            admin: room.userId,
+            faults,
+            roomId: room._id,
         });
+
     } catch (err) {
-        res.status(500).json({ message: "Error fetching tenant details", error: err });
+        console.error("Error fetching tenant info:", err);
+        res.status(500).json({ message: "Server error", error: err });
     }
 });
+
 
 module.exports = router;

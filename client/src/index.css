@@ -15,7 +15,6 @@ body {
   color: #f1f1f1;
 }
 
-
 .home-container {
   display: flex;
   align-items: center;
@@ -298,7 +297,7 @@ button:hover {
 }
 
 .room-faults li {
-  background: #2e2f3f;
+  background: #c6c7d6;
   padding: 10px;
   border-radius: 6px;
   margin-top: 5px;
@@ -309,3 +308,92 @@ button:hover {
   color: #fff;
 }
 
+
+.tenant-dashboard {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f2f4f8;
+  padding: 2rem;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+.card {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+section {
+  margin-bottom: 1.5rem;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul li {
+  background: #ecf0f1;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+}
+
+.fault-form {
+  display: flex;
+  gap: 1rem;
+}
+
+.fault-form input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.fault-form button {
+  background-color: #3498db;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.fault-form button:hover {
+  background-color: #2980b9;
+}
+
+.loading, .error-msg {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #e74c3c;
+}
+
+.no-room-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 30px;
+  max-width: 500px;
+  margin: 40px auto;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.no-room-card h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.no-room-card p {
+  color: #555;
+  margin: 5px 0;
+}
