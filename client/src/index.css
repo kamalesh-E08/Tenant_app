@@ -15,6 +15,65 @@ body {
   color: #f1f1f1;
 }
 
+
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  font-family: "Poppins", sans-serif;
+}
+
+.home-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.home-card h1 {
+  font-size: 32px;
+  margin-bottom: 15px;
+  color: #1b263b;
+}
+
+.home-card p {
+  font-size: 16px;
+  color: #4a4a4a;
+  margin-bottom: 30px;
+}
+
+.button-group {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.home-btn {
+  padding: 12px 24px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.home-btn:hover {
+  background: #0056b3;
+}
+
+.home-btn.secondary {
+  background: #6c757d;
+}
+
+.home-btn.secondary:hover {
+  background: #495057;
+}
+
 /* Button */
 button {
   cursor: pointer;

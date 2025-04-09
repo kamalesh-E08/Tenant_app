@@ -14,7 +14,6 @@ const AdminDashboard = () => {
       alert("Please log in first!");
       return;
     }
-
     axios
       .get("http://localhost:8000/rooms", {
         headers: { Authorization: `Bearer ${token}` },
@@ -46,66 +45,66 @@ const AdminDashboard = () => {
       .catch((err) => console.error(err));
   };
   
-const addMember = (roomId) => {
-  const roomInput = newMember[roomId];
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const addMember = (roomId) => {
+    const roomInput = newMember[roomId];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  if (!roomInput?.email || !roomInput?.name || !roomInput?.rentAmount) {
-    return alert("Please fill in all fields.");
-  }
+    if (!roomInput?.email || !roomInput?.name || !roomInput?.rentAmount) {
+      return alert("Please fill in all fields.");
+    }
 
-  if (!emailRegex.test(roomInput.email)) {
-    return alert("Invalid email format.");
-  }
+    if (!emailRegex.test(roomInput.email)) {
+      return alert("Invalid email format.");
+    }
 
-  const room = rooms.find((r) => r._id === roomId);
-  const duplicateEmail = room?.members?.some(
-    (member) => member.email.toLowerCase() === roomInput.email.toLowerCase()
-  );
+    const room = rooms.find((r) => r._id === roomId);
+    console.log(room.members.email, roomId, roomInput.email);
+    const duplicateEmail = room?.members?.some(
+      (member) => member.email.toLowerCase() === roomInput.email.toLowerCase()
+    );
 
-  if (duplicateEmail) {
-    return alert("Member with this email already exists in this room.");
-  }
+    if (duplicateEmail) {
+      return alert("Member with this email already exists in this room.");
+    }
 
-  const rent = parseFloat(roomInput.rentAmount);
-  if (isNaN(rent) || rent <= 0) {
-    return alert("Enter a valid rent amount.");
-  }
+    const rent = parseFloat(roomInput.rentAmount);
+    if (isNaN(rent) || rent <= 0) {
+      return alert("Enter a valid rent amount.");
+    }
 
-  axios
-    .post(
-      `http://localhost:8000/rooms/${roomId}/members`,
-      {
-        email: roomInput.email,
-        name: roomInput.name,
-        rentAmount: rent,
-      },
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    .then((res) => {
-      setRooms((prevRooms) =>
-        prevRooms.map((room) => (room._id === roomId ? res.data : room))
-      );
-      setNewMember((prev) => ({
-        ...prev,
-        [roomId]: { email: "", name: "", rentAmount: "" },
-      }));
-    })
-    .catch((err) => console.error(err));
-};
-
-
-const deleteRoom = (roomId) => {
-  axios
-      .delete(`http://localhost:8000/rooms/${roomId}`, {
-          headers: { Authorization: `Bearer ${token}` },
+    axios
+      .post(
+        `http://localhost:8000/rooms/${roomId}/members`,
+        {
+          email: roomInput.email,
+          name: roomInput.name,
+          rentAmount: rent,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then((res) => {
+        setRooms((prevRooms) =>
+          prevRooms.map((room) => (room._id === roomId ? res.data : room))
+        );
+        setNewMember((prev) => ({
+          ...prev,
+          [roomId]: { email: "", name: "", rentAmount: "" },
+        }));
       })
-      .then(() => {
-          setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
-      })
-      .catch((err) => console.error("Error deleting room:", err));
-};
+      .catch((err) => console.error(err));
+  };
 
+
+  const deleteRoom = (roomId) => {
+    axios
+        .delete(`http://localhost:8000/rooms/${roomId}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        })
+        .then(() => {
+            setRooms((prevRooms) => prevRooms.filter((room) => room._id !== roomId));
+        })
+        .catch((err) => console.error("Error deleting room:", err));
+  };
 
   const removeMember = (roomId, memberId) => {
     axios.delete(
@@ -115,11 +114,11 @@ const deleteRoom = (roomId) => {
     .then((res) => {
       setRooms((prevRooms) =>
           prevRooms.map((room) =>
-              room._id === roomId ? res.data : room
+            room._id === roomId ? res.data : room
           )
       );
-  })
-      .catch((err) => console.error(err));
+    })
+    .catch((err) => console.error(err));
   };
 
   const sendRentReminder = (roomId) => {
@@ -243,7 +242,7 @@ const deleteRoom = (roomId) => {
           <button onClick={() => deleteRoom(room._id)} style={{ marginTop: "10px", color: "red" }}>
             Delete Room
           </button>
-          <RoomFaultReporter/>
+          <RoomFaultReporter roomId={room._id} token={token}/>
           </div>
         ))}
       </div>

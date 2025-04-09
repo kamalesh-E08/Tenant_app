@@ -5,6 +5,7 @@ const roomSchema = new mongoose.Schema({
     name: String,
     members: [
         {
+            email: String,
             name: String,
             rentDue: Boolean,
             rentAmount: Number,
