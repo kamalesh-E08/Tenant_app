@@ -25,6 +25,13 @@ const roomSchema = new mongoose.Schema({
             default: Date.now
           }
         }
+      ],
+      rentReminders: [
+        {
+          email: String,
+          message: String,
+          sentAt: { type: Date, default: Date.now }
+        }
       ]
 });
 

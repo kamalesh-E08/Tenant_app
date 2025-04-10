@@ -6,6 +6,7 @@ const TenantDashboard = () => {
     const [tenantInfo, setTenantInfo] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [reminderMessage, setReminderMessage] = useState("");
 
     const token = localStorage.getItem("token");
     const email = localStorage.getItem("email");
@@ -20,6 +21,13 @@ const TenantDashboard = () => {
         })
         .then(res => {
             setTenantInfo(res.data)
+            const reminder = res.data.reminders?.find(
+                (r) => r.email === email
+              );
+          
+              if (reminder) {
+                setReminderMessage(reminder.message);
+              }
             setError("");
         })
         .catch(err => {
@@ -32,15 +40,21 @@ const TenantDashboard = () => {
     if (loading) {
         return <p>Loading...</p>;
     }
-    if (error) {
-        return <p style={{color:"red"}}>{error}</p>;
-    }
+
+    console.log("Tenant Info:", tenantInfo);
+    console.log("Error:", error);
     
     return (
         <div className="tenant-dashboard">
             <h1>Tenant Dashboard</h1>
 
-            {tenantInfo && tenantInfo.tenant? (
+            {reminderMessage && (
+                <div className="reminder-box">
+                    <p><strong>📢 Rent Reminder:</strong> {reminderMessage}</p>
+                </div>
+            )}
+
+            {tenantInfo? (
                 <div className="card">
                     <section>
                         <h2>Your Info</h2>

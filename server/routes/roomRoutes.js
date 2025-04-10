@@ -115,10 +115,18 @@ router.post("/:id/rent-reminder", authenticateJWT, async (req, res) => {
         const room = await Room.findById(id);
         if (!room) return res.status(404).json({ message: "Room not found" });
 
-        const reminders = room.members.map((member) => ({
-            memberName: member.name,
-            personalizedMessage: `${message || "Please pay your rent soon!"} Amount due: ₹${member.rentAmount}`,
-        }));
+        const reminders = room.members.map((member) => {
+            return {
+              email: member.email,
+              message: `${member.name}, ${message}`,
+              sentAt: new Date()
+            };
+          });
+
+          room.rentReminders = reminders;
+          await room.save();
+      
+          res.status(200).json(reminders);
 
         res.status(200).json(reminders);
     } catch (err) {
