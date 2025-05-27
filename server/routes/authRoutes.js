@@ -7,7 +7,7 @@ const router = express.Router();
 const JWT_SECRET = "qwertyuiop";
 
 router.post("/register", async (req, res) => {
-    const { email, password, role } = req.body;
+    const { name, email, password, role } = req.body;
     const lemail = email.toLowerCase();
     try {
         const existingUser = await User.findOne({ lemail });
@@ -16,8 +16,9 @@ router.post("/register", async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ lemail, password: hashedPassword, role });
+        const newUser = new User({ name, email:lemail, password: hashedPassword, role });
         await newUser.save();
+        console.log("New user registered:", newUser);
 
         res.status(201).json({ message: "User registered successfully!", user: newUser });
     } catch (err) {
